@@ -32,9 +32,10 @@
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0",
+        "symfony/phpunit-bridge": "^5.2",
         "doctrine/doctrine-fixtures-bundle": "2.3",
-        "fzaninotto/faker": "^1.9"
+        "fzaninotto/faker": "^1.9",
+        "phpunit/phpunit": "^5.7"
     },
     "scripts": {
         "symfony-scripts": [
