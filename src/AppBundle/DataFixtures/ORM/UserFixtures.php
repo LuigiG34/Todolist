@@ -9,7 +9,7 @@ use Faker\Factory;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UserFixture implements FixtureInterface, ContainerAwareInterface
+class UserFixtures implements FixtureInterface, ContainerAwareInterface
 {
     private $container;
 

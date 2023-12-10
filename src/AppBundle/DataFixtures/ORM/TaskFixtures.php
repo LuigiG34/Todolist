@@ -7,7 +7,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 
-class TaskFixture implements FixtureInterface
+class TaskFixtures implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {

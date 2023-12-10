@@ -15,8 +15,6 @@ abstract class CustomTestCase extends WebTestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $this->client = static::createClient();
         $this->userRepository = $this->client->getContainer()->get('doctrine')->getRepository('AppBundle:User');
         $this->user = $this->userRepository->findOneBy(['email' => 'luigi@example.fr']);
@@ -50,6 +48,5 @@ abstract class CustomTestCase extends WebTestCase
     protected function tearDown()
     {
         $this->logOut();
-        parent::tearDown();
     }
 }
