@@ -389,7 +389,7 @@ class SymfonyRequirements extends RequirementCollection
     {
         /* mandatory requirements follow */
 
-        $installedPhpVersion = PHP_VERSION;
+        $installedPhpVersion = phpversion();
         $requiredPhpVersion = $this->getPhpRequiredVersion();
 
         $this->addRecommendation(
@@ -448,8 +448,15 @@ class SymfonyRequirements extends RequirementCollection
         }
 
         if (false !== $requiredPhpVersion && version_compare($installedPhpVersion, $requiredPhpVersion, '>=')) {
+            $timezones = array();
+            foreach (DateTimeZone::listAbbreviations() as $abbreviations) {
+                foreach ($abbreviations as $abbreviation) {
+                    $timezones[$abbreviation['timezone_id']] = true;
+                }
+            }
+
             $this->addRequirement(
-                in_array(@date_default_timezone_get(), DateTimeZone::listIdentifiers(), true),
+                isset($timezones[@date_default_timezone_get()]),
                 sprintf('Configured default timezone "%s" must be supported by your installation of PHP', @date_default_timezone_get()),
                 'Your default timezone is not supported by PHP. Check for typos in your <strong>php.ini</strong> file and have a look at the list of deprecated timezones at <a href="http://php.net/manual/en/timezones.others.php">http://php.net/manual/en/timezones.others.php</a>.'
             );
@@ -627,6 +634,12 @@ class SymfonyRequirements extends RequirementCollection
         );
 
         $this->addRecommendation(
+            function_exists('iconv'),
+            'iconv() should be available',
+            'Install and enable the <strong>iconv</strong> extension.'
+        );
+
+        $this->addRecommendation(
             function_exists('utf8_decode'),
             'utf8_decode() should be available',
             'Install and enable the <strong>XML</strong> extension.'
@@ -724,7 +737,7 @@ class SymfonyRequirements extends RequirementCollection
             'Install and/or enable a <strong>PHP accelerator</strong> (highly recommended).'
         );
 
-        if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $this->addRecommendation(
                 $this->getRealpathCacheSize() >= 5 * 1024 * 1024,
                 'realpath_cache_size should be at least 5M in php.ini',
@@ -767,11 +780,7 @@ class SymfonyRequirements extends RequirementCollection
     {
         $size = ini_get('realpath_cache_size');
         $size = trim($size);
-        $unit = '';
-        if (!ctype_digit($size)) {
-            $unit = strtolower(substr($size, -1, 1));
-            $size = (int) substr($size, 0, -1);
-        }
+        $unit = strtolower(substr($size, -1, 1));
         switch ($unit) {
             case 'g':
                 return $size * 1024 * 1024 * 1024;
