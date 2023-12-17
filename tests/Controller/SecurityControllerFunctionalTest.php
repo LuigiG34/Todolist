@@ -8,6 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SecurityControllerFunctionalTest extends CustomTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->logOut();
+    }
+
     /**
      * @dataProvider credentialsForLoginTest
      */
@@ -18,14 +24,15 @@ class SecurityControllerFunctionalTest extends CustomTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = $username;
-        $form['_password'] = $password; 
+        $form['username'] = $username;
+        $form['password'] = $password; 
 
         $crawler = $this->client->submit($form);
         $crawler = $this->client->followRedirect();
 
         $baseUrl = $this->urlGenerator->getContext()->getScheme() . '://' . $this->urlGenerator->getContext()->getHost();
-        $expectedRedirectUrl = $baseUrl . $this->urlGenerator->generate('homepage');
+        $expectedRedirectUrl = $baseUrl . $this->urlGenerator->generate('app_homepage');
+
 
         if ($expectedRedirectUrl === $this->client->getRequest()->getUri()) {    
             $this->assertGreaterThan(0, $crawler->filter('h1')->count());

@@ -15,7 +15,7 @@ class DefaultControllerFunctionnalTest extends CustomTestCase
 
     public function testFunctionalIndex()
     {
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('homepage'));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('app_homepage'));
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
