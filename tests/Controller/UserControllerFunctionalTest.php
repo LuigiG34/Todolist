@@ -36,6 +36,7 @@ class UserControllerFunctionalTest extends CustomTestCase
             $form['user[password][first]'] = 'Password';
             $form['user[password][second]'] = 'Password';
             $form['user[email]'] = 'test@test.fr';
+            $form['user[roles][]'] = 'ROLE_ADMIN';
     
             $crawler = $this->client->submit($form);
     
