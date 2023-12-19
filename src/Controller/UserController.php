@@ -12,17 +12,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
-    /**
-     * @Route("/users", name="user_list")
-     */
+
+    #[Route('/users', name:'user_list')]
     public function listAction(ManagerRegistry $managerRegistry)
     {
         return $this->render('user/list.html.twig', ['users' => $managerRegistry->getRepository('App\Entity\User')->findAll()]);
     }
 
-    /**
-     * @Route("/users/create", name="user_create")
-     */
+
+    #[Route('/users/create', name:'user_create')]
     public function createAction(Request $request, UserPasswordHasherInterface $passwordEncoder, ManagerRegistry $managerRegistry)
     {
         $user = new User();
@@ -46,9 +44,8 @@ class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/users/{id}/edit", name="user_edit")
-     */
+
+    #[Route('/users/{id}/edit', name:'user_edit')]
     public function editAction(User $user, Request $request, UserPasswordHasherInterface $passwordEncoder, ManagerRegistry $managerRegistry)
     {
         $form = $this->createForm(UserType::class, $user);

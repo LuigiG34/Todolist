@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Tests\CustomTestCase;
 
-class DefaultControllerFunctionnalTest extends CustomTestCase
+class DefaultControllerFunctionalTest extends CustomTestCase
 {
     public function setUp(): void
     {
