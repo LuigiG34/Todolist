@@ -26,7 +26,6 @@ abstract class CustomTestCase extends WebTestCase
 
     protected function logOut()
     {
-        $session = $this->client->getContainer()->get('session');
-        $session->invalidate();
+        $this->client->getContainer()->get('security.token_storage')->setToken(null);
     }
 }

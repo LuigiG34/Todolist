@@ -10,8 +10,13 @@ class SecurityControllerFunctionalTest extends CustomTestCase
 {
     public function setUp(): void
     {
-        parent::setUp();
-        $this->logOut();
+        if (null === $this->client) {
+            $this->client = static::createClient();
+        }
+        $this->userRepository = $this->client->getContainer()->get('doctrine')->getRepository('App\Entity\User');
+        $this->user = $this->userRepository->findOneBy(['email' => 'luigi@example.fr']);
+        $this->urlGenerator = $this->client->getContainer()->get('router.default');
+        $this->client->disableReboot();
     }
 
     /**
@@ -43,7 +48,7 @@ class SecurityControllerFunctionalTest extends CustomTestCase
     }
 
 
-    public function credentialsForLoginTest()
+    public static function credentialsForLoginTest()
     {
         return [
             ["Luigi22", "motdepasse"],
