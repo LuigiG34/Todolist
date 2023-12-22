@@ -1,12 +1,78 @@
-name: CI
+# https://help.github.com/en/actions
+name: Full CI process for Symfony 6.4
+on:
+  push:
 
-on: [push]
-
+env:
+  ES_HTTP_PORT: 9209
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-
+  symfony:
+    name: Symfony 6.4 (PHP ${{ matrix.php-versions }})
+    # https://hub.docker.com/_/ubuntu/
+    runs-on: ubuntu-20.04
+    services:
+      # https://docs.docker.com/samples/library/mysql/
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: ['8.2']
     steps:
-    - uses: actions/checkout@v3
-    - uses: php-actions/composer@v6
-    - uses: php-actions/phpunit@v3
+      # —— Setup Github actions 🐙 —————————————————————————————————————————————
+      # https://github.com/actions/checkout (official)
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # https://github.com/shivammathur/setup-php (community)
+      - name: Setup PHP, extensions and composer with shivammathur/setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
+        env:
+          update: true
+
+      - name: Check PHP Version
+        run: php -v
+
+      # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      # —— Symfony 🎵 ——————————————————————————————————————————————————————————
+      - name: Check Symfony requirements
+        run: vendor/bin/requirements-checker
+
+      - name: Check the Symfony console
+        run: |
+          bin/console about
+
+      ## —— Tests ✅ ———————————————————————————————————————————————————————————
+      # We use the dev env here
+      - name: Load Doctrine fixtures and populate the Elasticsearch indexes
+        run: |
+          bin/console doctrine:migrations:migrate --no-interaction
+          bin/console doctrine:fixtures:load --purge-with-truncate -q
+
+
+      - name: Run functionnal and unit tests
+        run: |
+          vendor/bin/phpunit
