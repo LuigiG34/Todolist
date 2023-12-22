@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class TaskController extends AbstractController
 {
@@ -77,6 +78,7 @@ class TaskController extends AbstractController
 
 
     #[Route('/tasks/{id}/delete', name:'task_delete')]
+    #[Security("is_granted('delete')")]
     public function deleteTaskAction(Task $task, ManagerRegistry $managerRegistry)
     {
         $em = $managerRegistry->getManager();
