@@ -69,7 +69,7 @@ jobs:
       - name: Migrate 
         run: php bin/console doctrine:migrations:migrate --no-interaction
       - name: Fixtures loaded
-        run: php bin/console doctrine:fixtures:load --purge-with-truncate -q
+        run: php bin/console doctrine:fixtures:load -q
 
 
       - name: Run functionnal and unit tests
