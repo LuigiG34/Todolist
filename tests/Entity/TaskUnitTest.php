@@ -12,11 +12,11 @@ class TaskUnitTest extends TestCase
         $task = new Task();
         $task->setTitle('Title Test');
         $task->setContent('Lorem ipsum dolor, ...');
-        $task->setCreatedAt(new \DateTimeImmutable());
+        $task->setCreatedAt(new \DateTime());
 
         $this->assertEquals('Title Test', $task->getTitle());
         $this->assertEquals('Lorem ipsum dolor, ...', $task->getContent());
         $this->assertEquals(false, $task->isDone());
-        $this->assertEquals(true, $task->getCreatedAt() instanceof \DateTimeImmutable);
+        $this->assertEquals(true, $task->getCreatedAt() instanceof \DateTime);
     }
 }

@@ -10,12 +10,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class TaskVoter extends Voter
 {
-    public const DELETE = 'delete';
+    public const DELETE = 'TASK_DELETE';
 
     protected function supports(string $attribute, $subject): bool
     {
-        // Only vote on 'DELETE' actions for Task objects
-        return $attribute === 'DELETE' && $subject instanceof Task;
+        // Only vote on 'self::DELETE' actions for Task objects
+        return $attribute === self::DELETE && $subject instanceof Task;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -40,6 +40,13 @@ class TaskVoter extends Voter
 
     private function canDelete(Task $task, User $user): bool
     {
-        return $task->getUser() === $user || ($task->getUser() === null && in_array('ROLE_ADMIN', $user->getRoles()));
+        // Check if the task is associated with a user
+        if ($task->getUser() !== null) {
+            // Allow deletion only if the task is associated with the current user
+            return $task->getUser() === $user;
+        } else {
+            // If the task is not associated with any user, allow deletion only for admin users
+            return in_array('ROLE_ADMIN', $user->getRoles());
+        }
     }
 }
