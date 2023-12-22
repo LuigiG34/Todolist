@@ -57,7 +57,7 @@ class TaskControllerFunctionalTest extends CustomTestCase
 
         try {
 
-            $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => 34]));
+            $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => $this->task->getId()]));
             $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
             $form = $crawler->selectButton('Modifier')->form();
@@ -82,7 +82,7 @@ class TaskControllerFunctionalTest extends CustomTestCase
 
     public function testFunctionalToggleTask()
     {
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_toggle', ['id' => 34]));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_toggle', ['id' => $this->task->getId()]));
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
     }
@@ -94,7 +94,7 @@ class TaskControllerFunctionalTest extends CustomTestCase
 
         try {
 
-            $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => 34]));
+            $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => $this->task->getId()]));
             $crawler = $this->client->followRedirect();
             $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 

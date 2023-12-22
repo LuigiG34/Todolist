@@ -18,6 +18,6 @@ class UserUnitTest extends TestCase
         $this->assertEquals('testUsername', $user->getUsername());
         $this->assertEquals('test@test.fr', $user->getEmail());
         $this->assertEquals('testPassword', $user->getPassword());
-        $this->assertEquals(['ROLE_ADMIN'], $user->getRoles());
+        $this->assertEquals(['ROLE_ADMIN', 'ROLE_USER'], $user->getRoles());
     }
 }

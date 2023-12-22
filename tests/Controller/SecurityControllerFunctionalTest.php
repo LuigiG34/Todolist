@@ -51,7 +51,7 @@ class SecurityControllerFunctionalTest extends CustomTestCase
     public static function credentialsForLoginTest()
     {
         return [
-            ["Luigi22", "motdepasse"],
+            ["LuigiAdmin", "motdepasse"],
             ["mauvaisIdentifiant", "mauvaisMotdepasse"]
         ];
     }
