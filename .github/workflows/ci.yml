@@ -59,18 +59,18 @@ jobs:
 
       # —— Symfony 🎵 ——————————————————————————————————————————————————————————
       - name: Check Symfony requirements
-        run: bin/symfony_requirements
+        run: php bin/symfony_requirements
 
       - name: Check the Symfony console
         run: |
-          bin/console about
+          php bin/console about
 
       ## —— Tests ✅ ———————————————————————————————————————————————————————————
       # We use the dev env here
       - name: Load Doctrine fixtures and populate the Elasticsearch indexes
         run: |
-          bin/console doctrine:migrations:migrate --no-interaction
-          bin/console doctrine:fixtures:load --purge-with-truncate -q
+          php bin/console doctrine:migrations:migrate --no-interaction
+          php bin/console doctrine:fixtures:load --purge-with-truncate -q
 
 
       - name: Run functionnal and unit tests
