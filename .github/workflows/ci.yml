@@ -66,6 +66,7 @@ jobs:
       # We use the dev env here
       - name: Load Doctrine fixtures and populate the Elasticsearch indexes
         run: |
+          php bin/console doctrine:database:create -q -n
           php bin/console doctrine:migrations:migrate --no-interaction
           php bin/console doctrine:fixtures:load --purge-with-truncate -q
 
