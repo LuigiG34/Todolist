@@ -36,7 +36,7 @@ class UserControllerFunctionalTest extends CustomTestCase
             $form['user[password][first]'] = 'Password';
             $form['user[password][second]'] = 'Password';
             $form['user[email]'] = 'test@test.fr';
-            $form['user[roles][]'] = 'ROLE_ADMIN';
+            $form['user[roles]'][1]->tick();
     
             $crawler = $this->client->submit($form);
     
@@ -61,7 +61,7 @@ class UserControllerFunctionalTest extends CustomTestCase
 
         try{
 
-            $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', ['id' => 12]));
+            $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', ['id' => $this->userEdit->getId()]));
 
             $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 

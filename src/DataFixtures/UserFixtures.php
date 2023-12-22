@@ -6,28 +6,34 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
-    private $container;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
-        $this->container = $container;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create();
-        $encoder = $this->container->get('security.password_encoder');
 
         $user = new User;
-        $user->setUsername("Luigi22");
-        $user->setEmail("luigi@example.fr");
-        $user->setPassword($encoder->encodePassword($user, "motdepasse"));
-            
+        $user->setUsername("LuigiAdmin");
+        $user->setEmail("luigi@admin.fr");
+        $user->setPassword($this->passwordHasher->hashPassword($user, "motdepasse"));
+        $user->setRoles(['ROLE_ADMIN']);
+        $manager->persist($user);
+
+
+        $user = new User;
+        $user->setUsername("LuigiUser");
+        $user->setEmail("luigi@user.fr");
+        $user->setPassword($this->passwordHasher->hashPassword($user, "motdepasse"));
+        $user->setRoles(['ROLE_USER']);
         $manager->persist($user);
 
 
@@ -35,8 +41,12 @@ class UserFixtures extends Fixture
             $users = new User;
             $users->setUsername($faker->userName());
             $users->setEmail($faker->email());
-            $users->setPassword($encoder->encodePassword($users, $faker->password()));
+            $users->setPassword($this->passwordHasher->hashPassword($users, $faker->password()));
+            $users->setRoles(['ROLE_USER']);
             
+             // Set reference for later use
+            $this->addReference('user-'.$i, $user);
+
             $manager->persist($users);
         }
 
