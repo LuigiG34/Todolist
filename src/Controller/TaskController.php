@@ -8,20 +8,21 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TaskController extends AbstractController
 {
 
-    #[Route('/tasks', name:'task_list')]
-    public function listAction(ManagerRegistry $managerRegistry)
+    #[Route('/tasks', name:'task_list', methods: ['GET'])]
+    public function listAction(ManagerRegistry $managerRegistry): Response
     {
         return $this->render('task/list.html.twig', ['tasks' => $managerRegistry->getRepository('App\Entity\Task')->findAll()]);
     }
 
 
-    #[Route('/tasks/create', name:'task_create')]
-    public function createAction(Request $request, ManagerRegistry $managerRegistry)
+    #[Route('/tasks/create', name:'task_create', methods: ['GET', 'POST'])]
+    public function createAction(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -43,8 +44,8 @@ class TaskController extends AbstractController
     }
 
 
-    #[Route('/tasks/{id}/edit', name:'task_edit')]
-    public function editAction(Task $task, Request $request, ManagerRegistry $managerRegistry)
+    #[Route('/tasks/{id}/edit', name:'task_edit', methods: ['GET', 'POST'])]
+    public function editAction(Task $task, Request $request, ManagerRegistry $managerRegistry): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
@@ -65,8 +66,8 @@ class TaskController extends AbstractController
     }
 
 
-    #[Route('/tasks/{id}/toggle', name:'task_toggle')]
-    public function toggleTaskAction(Task $task, ManagerRegistry $managerRegistry)
+    #[Route('/tasks/{id}/toggle', name:'task_toggle', methods: ['GET', 'POST'])]
+    public function toggleTaskAction(Task $task, ManagerRegistry $managerRegistry): Response
     {
         $task->toggle(!$task->isDone());
         $managerRegistry->getManager()->flush();
@@ -77,9 +78,9 @@ class TaskController extends AbstractController
     }
 
 
-    #[Route('/tasks/{id}/delete', name:'task_delete')]
-    #[Security("is_granted('delete')")]
-    public function deleteTaskAction(Task $task, ManagerRegistry $managerRegistry)
+    #[Route('/tasks/{id}/delete', name:'task_delete', methods: ['GET', 'POST'])]
+    #[IsGranted('TASK_DELETE', subject: 'task')]
+    public function deleteTaskAction(Task $task, ManagerRegistry $managerRegistry): Response
     {
         $em = $managerRegistry->getManager();
         $em->remove($task);
