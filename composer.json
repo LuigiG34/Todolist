@@ -1,6 +1,7 @@
 {
     "name": "saro0h/to-do-list",
     "license": "proprietary",
+    "description": "Todolist project for Openclassrooms",
     "type": "project",
     "require": {
         "php": ">=8.2",
