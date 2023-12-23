@@ -10,14 +10,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 
 class UserController extends AbstractController
 {
 
     #[Route('/users', name:'user_list', methods: ['GET'])]
-    public function listAction(ManagerRegistry $managerRegistry): Response
+    #[Cache(smaxage: "60")]
+    public function listAction(ManagerRegistry $managerRegistry, Request $request): Response
     {
-        return $this->render('user/list.html.twig', ['users' => $managerRegistry->getRepository('App\Entity\User')->findAll()]);
+        $response = $this->render('user/list.html.twig', ['users' => $managerRegistry->getRepository('App\Entity\User')->findAll()]);
+    
+        // Générer le etag
+        $response->setEtag(md5($response->getContent()));
+        $response->setPublic(); // Rendre reponse public + caché et partager le cache
+    
+        // Si pas modifié
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+    
+        return $response;
     }
 
 

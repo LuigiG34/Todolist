@@ -10,14 +10,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 
 class TaskController extends AbstractController
 {
 
     #[Route('/tasks', name:'task_list', methods: ['GET'])]
-    public function listAction(ManagerRegistry $managerRegistry): Response
+    #[Cache(smaxage: "60")]
+    public function listAction(ManagerRegistry $managerRegistry, Request $request): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $managerRegistry->getRepository('App\Entity\Task')->findAll()]);
+        $response = $this->render('task/list.html.twig', ['tasks' => $managerRegistry->getRepository('App\Entity\Task')->findAll()]);
+
+        $response->setEtag(md5($response->getContent()));
+        $response->setPublic();
+    
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+    
+        return $response;
     }
 
 
