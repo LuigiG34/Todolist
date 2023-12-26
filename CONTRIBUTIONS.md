@@ -11,8 +11,8 @@ Checkout the README.md file
 4. For each new feature or bug create an issue
 5. Create a branch for each feature/issue
 6. When you create a pull request wait for the 2 checks to pass :
-    6.1. ```Automated tests``` : Your new code works with the current project
-    6.2. ```SymfonyInsight``` : The quality of your code is good
+- ```Automated tests``` : Your new code works with the current project
+- ```SymfonyInsight``` : The quality of your code is good
 
 ### Respect coding conventions
 1. Use ```camelCase``` for your variables, functions and parameters (PSR-1)
