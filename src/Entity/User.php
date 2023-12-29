@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: "user")]
-#[UniqueEntity("email")]
+#[UniqueEntity(fields: "email", message: "Email already exists in database")]
+#[UniqueEntity(fields: "username", message: "Username already exists in database")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -33,6 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: "json")]
+    #[Assert\Count(
+        min: 1,
+        minMessage: "You must select at least one role."
+    )]
     private array $roles = [];
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
