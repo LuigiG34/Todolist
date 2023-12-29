@@ -36,10 +36,10 @@ class UserControllerFunctionalTest extends CustomTestCase
             $form['user[password][first]'] = 'Password';
             $form['user[password][second]'] = 'Password';
             $form['user[email]'] = 'test@test.fr';
-            $form['user[roles]'][1]->tick();
+            $form['user[roles]']->select('ROLE_ADMIN');
     
             $crawler = $this->client->submit($form);
-    
+
             if ($this->client->getResponse()->isRedirect()) {
                 $crawler = $this->client->followRedirect();
             }
